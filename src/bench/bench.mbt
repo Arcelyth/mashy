@@ -50,7 +50,7 @@ test "multi_scene_bench" (b : @bench.T) {
   let b_pool = Bytes::make(bulk_bytes_size, 0)
   
   b.bench(name="bulk_scene1_c_simd", fn() {
-    @ffi.ext_vec4f_add_bulk(out_pool, a_pool, b_pool, count)
+    @f32.Vec4::add_bulk(out_pool, a_pool, b_pool, count)
     b.keep(out_pool)
   })
 

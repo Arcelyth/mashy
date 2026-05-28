@@ -1,6 +1,5 @@
 import {
     "Arcelyth/mashy/src/f32" @f32,
-    "Arcelyth/mashy/src/ffi" @ffi
 }
 
 options(
