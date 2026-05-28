@@ -1,9 +1,10 @@
+import {
+    "Arcelyth/mashy/src/ffi" @ffi
+}
+
 options(
   "supported_targets": [
      "native",
      "llvm"
   ],
-  "native-stub": [
-    "simd.c"
-  ]
 )
