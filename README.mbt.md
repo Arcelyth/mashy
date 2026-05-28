@@ -1,3 +1,3 @@
-# Arcelyth/Mashy
+# Arcelyth/mashy
 
 

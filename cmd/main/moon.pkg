@@ -1,7 +1,0 @@
-import {
-  "Arcelyth/mashy" @lib,
-}
-
-options(
-  "is-main": true,
-)

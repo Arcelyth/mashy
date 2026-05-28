@@ -6,7 +6,7 @@
   "repository": "https://github.com/Arcelyth/mashy",
   "license": "Apache-2.0",
   "keywords": ["math", "simd", "algebra"],
-  "description": "A lightweight and high-performance math lib.",
+  "description": "A lightweight and high-performance linear algebra library.",
   "preferred-target": "native",
   "supported-targets": "native"
 }
