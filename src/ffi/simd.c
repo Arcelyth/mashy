@@ -2,24 +2,23 @@
 
 #if defined(__ARM_NEON) || defined(__aarch64__)
     #include <arm_neon.h>
-    typedef float32x4_t Vec4f;
+    typedef float32x4_t vec_f32;
     typedef int32x4_t vec_i32;
     typedef uint32x4_t vec_u32;
     typedef uint8x16_t vec_u8;
 #elif defined(__SSE__) || defined(__x86_64__)
     #include <immintrin.h>
-    typedef __m128 Vec4f;
+    typedef __m128 vec_f32;
     typedef __m128i vec_i32;
     typedef __m128i vec_u32;
     typedef __m128i vec_u8;
 #else
-    typedef struct { float f[4]; } Vec4f;
+    typedef struct { float f[4]; } vec_f32;
 #endif
 
 typedef struct {
-    Vec4f v;
+    vec_f32 v;
 } Vec4f32;
-
 
 Vec4f32 vec4f_new(float x, float y, float z, float w) {
     Vec4f32 r;
