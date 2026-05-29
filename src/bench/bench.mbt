@@ -8,7 +8,7 @@ struct VecS4 {
 
 ///|
 fn VecS4::VecS4(x : Float, y : Float, z : Float, w :Float) -> VecS4 {
-  { x, y, z, w}
+  { x, y, z, w }
 }
 
 ///|

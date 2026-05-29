@@ -15,6 +15,24 @@ pub impl Add for Vec4 with add(self : Vec4, other : Vec4) -> Vec4 {
   { raw: @ffi.ext_vec4f_add(self.raw, other.raw) }
 }
 
+///|
+#inline
+pub impl Sub for Vec4 with sub(self : Vec4, other : Vec4) -> Vec4 {
+  { raw: @ffi.ext_vec4f_sub(self.raw, other.raw) }
+}
+
+///|
+#inline
+pub impl Mul for Vec4 with mul(self : Vec4, other : Vec4) -> Vec4 {
+  { raw: @ffi.ext_vec4f_mul(self.raw, other.raw) }
+}
+
+///|
+#inline
+pub impl Div for Vec4 with div(self : Vec4, other : Vec4) -> Vec4 {
+  { raw: @ffi.ext_vec4f_div(self.raw, other.raw) }
+}
+
 ///| 
 #inline
 pub impl Eq for Vec4 with equal(self: Vec4, other: Vec4) -> Bool {
@@ -52,6 +70,30 @@ pub fn Vec4::add_bulk(out_pool: Bytes, a_pool: Bytes, b_pool: Bytes, count: Int)
   @ffi.ext_vec4f_add_bulk(out_pool, a_pool, b_pool, count)
 }
 
+///| 
+#inline 
+pub fn Vec4::sub_bulk(out_pool: Bytes, a_pool: Bytes, b_pool: Bytes, count: Int) -> Unit {
+  @ffi.ext_vec4f_sub_bulk(out_pool, a_pool, b_pool, count)
+}
+
+///| 
+#inline 
+pub fn Vec4::mul_bulk(out_pool: Bytes, a_pool: Bytes, b_pool: Bytes, count: Int) -> Unit {
+  @ffi.ext_vec4f_mul_bulk(out_pool, a_pool, b_pool, count)
+}
+
+///| 
+#inline 
+pub fn Vec4::div_bulk(out_pool: Bytes, a_pool: Bytes, b_pool: Bytes, count: Int) -> Unit {
+  @ffi.ext_vec4f_div_bulk(out_pool, a_pool, b_pool, count)
+}
+
+///| 
+#inline 
+pub fn Vec4::dot_bulk(out_pool: Bytes, a_pool: Bytes, b_pool: Bytes, count: Int) -> Unit {
+  @ffi.ext_vec4f_dot_bulk(out_pool, a_pool, b_pool, count)
+}
+
 ///|
 /// Create a 4D vector with all elements are 'v'.
 #inline 
@@ -61,30 +103,35 @@ pub fn Vec4::splat(v: Float) -> Vec4 {
 
 ///|
 /// Create a 4D vector from an array.
+#inline 
 pub fn Vec4::from_array(arr: Array[Float]) -> Vec4 {
   { raw: @ffi.ext_vec4f_new(arr[0], arr[1], arr[2], arr[3]) }
 }
 
 ///|
 /// Create a 4D vector from an fixed array.
+#inline 
 pub fn Vec4::from_fixed_array(arr: FixedArray[Float]) -> Vec4 {
   { raw: @ffi.ext_vec4f_new(arr[0], arr[1], arr[2], arr[3]) }
 }
 
 ///|
 /// Return an array from a 4D vector.
+#inline 
 pub fn Vec4::to_array(self: Vec4) -> Array[Float] {
   [self.x(), self.y(), self.z(), self.w()]
 }
 
 ///|
 /// Return a fixed array from a 4D vector.
+#inline 
 pub fn Vec4::to_fixed_array(self: Vec4) -> FixedArray[Float] {
   [self.x(), self.y(), self.z(), self.w()]
 }
 
 ///|
 /// Write the elements of the 4D vector one by one starting from 'pos' index to the target array.
+#inline 
 pub fn Vec4::write_to_array(self: Vec4, arr: Array[Float], pos: Int) -> Unit? {
   guard pos >= 0 && pos + 3 < arr.length() else { None }  
   arr[pos] = self.x()
@@ -94,12 +141,60 @@ pub fn Vec4::write_to_array(self: Vec4, arr: Array[Float], pos: Int) -> Unit? {
   Some(())
 }
 
+///|
+#inline
+pub fn Vec4::dot(self : Vec4, other : Vec4) -> Float {
+  @ffi.ext_vec4f_dot(self.raw, other.raw)
+}
 
 test "Vec4_add" {
   let v1 = Vec4::new(1.0, 2.0, 3.0, 4.0)  
   let v2 = Vec4::new(1.0, 2.0, 3.0, 4.0)  
   let v3 = Vec4::new(1.0, 2.0, 3.0, 4.0)  
   assert_eq(v1 + v2 + v3, Vec4::new(3.0, 6.0, 9.0, 12.0))
+}
+
+test "Vec4_sub" {
+  let v1 = Vec4::new(4.0, 5.0, 6.0, 7.0)  
+  let v2 = Vec4::new(1.0, 1.0, 1.0, 1.0)  
+  let v3 = Vec4::new(2.0, 2.0, 2.0, 2.0)  
+  assert_eq(v1 - v2 - v3, Vec4::new(1.0, 2.0, 3.0, 4.0))
+}
+
+test "Vec4_mul" {
+  let v1 = Vec4::new(1.0, 2.0, 3.0, 4.0)
+  let v2 = Vec4::new(2.0, 3.0, 4.0, 5.0)
+  assert_eq(v1 * v2, Vec4::new(2.0, 6.0, 12.0, 20.0))
+}
+
+test "Vec4_div" {
+  let v1 = Vec4::new(8.0, 18.0, 32.0, 50.0)
+  let v2 = Vec4::new(2.0, 3.0, 4.0, 5.0)
+  assert_eq(v1 / v2, Vec4::new(4.0, 6.0, 8.0, 10.0))
+}
+
+test "Vec4_dot" {
+  let v1 = Vec4::new(1.0, 2.0, 3.0, 4.0)
+  let v2 = Vec4::new(5.0, 6.0, 7.0, 8.0)
+  assert_eq(v1.dot(v2), 70.0)
+}
+
+test "Vec4_mixed_expr" {
+  let v1 = Vec4::new(1.0, 2.0, 3.0, 4.0)
+  let v2 = Vec4::new(2.0, 3.0, 4.0, 5.0)
+  let v3 = Vec4::new(10.0, 10.0, 10.0, 10.0)
+
+  let r = (v1 + v2) * v3 - v1
+
+  assert_eq(
+    r,
+    Vec4::new(
+      (1.0 + 2.0) * 10.0 - 1.0,
+      (2.0 + 3.0) * 10.0 - 2.0,
+      (3.0 + 4.0) * 10.0 - 3.0,
+      (4.0 + 5.0) * 10.0 - 4.0
+    )
+  )
 }
 
 test "Vec4_get_element" {
@@ -109,6 +204,11 @@ test "Vec4_get_element" {
   assert_eq(v.y(), 2.2)
   assert_eq(v.z(), 3.3)
   assert_eq(v.w(), 4.4)
+}
+
+test "Vec4_splat" {
+  let v = Vec4::splat(3.0)
+  assert_eq(v, Vec4::new(3.0, 3.0, 3.0, 3.0))
 }
 
 test "Vec4_write_to_array" {
@@ -166,3 +266,154 @@ test "Vec4_add_bulk" {
     )
   }
 }
+
+test "Vec4_sub_bulk" {
+  let n = 4
+  let byte_len = n * 4
+
+  // a = [5.0, 5.0, 5.0, 5.0]
+  let a = Bytes::from_array([
+    0, 0, 160, 64,
+    0, 0, 160, 64,
+    0, 0, 160, 64,
+    0, 0, 160, 64,
+  ].map(fn(x) { x.to_byte() }))
+
+  // b = [2.0, 2.0, 2.0, 2.0]
+  let b = Bytes::from_array([
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+  ].map(fn(x) { x.to_byte() }))
+
+  let out = Bytes::from_array(
+    Array::make(byte_len, 0)
+      .map(fn(x) { x.to_byte() })
+  )
+
+  Vec4::sub_bulk(out, a, b, n)
+
+  // expected = [3.0, 3.0, 3.0, 3.0]
+  let expected = [
+    0, 0, 64, 64,
+    0, 0, 64, 64,
+    0, 0, 64, 64,
+    0, 0, 64, 64,
+  ]
+
+  for i in 0..<byte_len {
+    assert_eq(out[i].to_int(), expected[i])
+  }
+}
+
+test "Vec4_mul_bulk" {
+  let n = 4
+  let byte_len = n * 4
+
+  // a = [2.0, 2.0, 2.0, 2.0]
+  let a = Bytes::from_array([
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+  ].map(fn(x) { x.to_byte() }))
+
+  // b = [4.0, 4.0, 4.0, 4.0]
+  let b = Bytes::from_array([
+    0, 0, 128, 64,
+    0, 0, 128, 64,
+    0, 0, 128, 64,
+    0, 0, 128, 64,
+  ].map(fn(x) { x.to_byte() }))
+
+  let out = Bytes::from_array(
+    Array::make(byte_len, 0)
+      .map(fn(x) { x.to_byte() })
+  )
+
+  Vec4::mul_bulk(out, a, b, n)
+
+  // expected = [8.0, 8.0, 8.0, 8.0]
+  // 8.0 -> 00 00 00 41
+  let expected = [
+    0, 0, 0, 65,
+    0, 0, 0, 65,
+    0, 0, 0, 65,
+    0, 0, 0, 65,
+  ]
+
+  for i in 0..<byte_len {
+    assert_eq(out[i].to_int(), expected[i])
+  }
+}
+
+test "Vec4_div_bulk" {
+  let n = 4
+  let byte_len = n * 4
+
+  // a = [8.0, 8.0, 8.0, 8.0]
+  let a = Bytes::from_array([
+    0, 0, 0, 65,
+    0, 0, 0, 65,
+    0, 0, 0, 65,
+    0, 0, 0, 65,
+  ].map(fn(x) { x.to_byte() }))
+
+  // b = [2.0, 2.0, 2.0, 2.0]
+  let b = Bytes::from_array([
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+  ].map(fn(x) { x.to_byte() }))
+
+  let out = Bytes::from_array(
+    Array::make(byte_len, 0)
+      .map(fn(x) { x.to_byte() })
+  )
+
+  Vec4::div_bulk(out, a, b, n)
+
+  // expected = [4.0, 4.0, 4.0, 4.0]
+  // 4.0 -> 00 00 80 40
+  let expected = [
+    0, 0, 128, 64,
+    0, 0, 128, 64,
+    0, 0, 128, 64,
+    0, 0, 128, 64,
+  ]
+
+  for i in 0..<byte_len {
+    assert_eq(out[i].to_int(), expected[i])
+  }
+}
+
+test "Vec4_dot_bulk" {
+  // A = [1.0, 2.0, 3.0, 4.0]
+  let a = Bytes::from_array([
+    0, 0, 128, 63, // 1.0
+    0, 0, 0, 64,   // 2.0
+    0, 0, 64, 64,  // 3.0
+    0, 0, 128, 64, // 4.0
+  ].map(fn(x) { x.to_byte() }))
+
+  // B = [1.0, 1.0, 1.0, 1.0]
+  let b = Bytes::from_array([
+    0, 0, 128, 63, 
+    0, 0, 128, 63, 
+    0, 0, 128, 63, 
+    0, 0, 128, 63,
+  ].map(fn(x) { x.to_byte() }))
+
+  let out = Bytes::from_array(Array::make(4, 0).map(fn(x) { x.to_byte() }))
+
+  Vec4::dot_bulk(out, a, b, 4)
+
+  // 1*1 + 2*1 + 3*1 + 4*1 = 10.0 [0, 0, 32, 65]
+  if out[2] != (32 : Byte) || out[3] != (65 : Byte) {
+    panic()
+  }
+}
+
+
