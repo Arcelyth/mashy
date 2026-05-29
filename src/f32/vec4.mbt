@@ -127,4 +127,42 @@ test "Vec4_write_to_array" {
   assert_eq(arr[5], 0.0)
 }
 
+test "Vec4_add_bulk" {
+  let n = 4
+  let byte_len = n * 4
 
+  let a = Bytes::from_array([
+    0, 0, 128, 63,  // 1.0
+    0, 0, 128, 63,
+    0, 0, 128, 63,
+    0, 0, 128, 63,
+  ].map(fn(x) { x.to_byte() }))
+
+  let b = Bytes::from_array([
+    0, 0, 0, 64,    // 2.0
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+    0, 0, 0, 64,
+  ].map(fn(x) { x.to_byte() }))
+
+  let out = Bytes::from_array(
+    Array::make(byte_len, 0)
+      .map(fn(x) { x.to_byte() })
+  )
+
+  Vec4::add_bulk(out, a, b, n)
+
+  let expected = [
+    0, 0, 64, 64,   // 3.0
+    0, 0, 64, 64,
+    0, 0, 64, 64,
+    0, 0, 64, 64,
+  ]
+
+  for i in 0..<byte_len {
+    assert_eq(
+      out[i].to_int(),
+      expected[i]
+    )
+  }
+}

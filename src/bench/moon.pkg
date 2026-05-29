@@ -5,6 +5,5 @@ import {
 options(
   "supported_targets": [
      "native",
-     "llvm"
   ],
 )

@@ -93,23 +93,15 @@ float vec4f_get_w(const Vec4f32* a) {
 }
 
 void vec4f_add_bulk(float* out, const float* a, const float* b, int count) {
-    int total_floats = count * 4;
+    int32_t i = 0;
 #if defined(__ARM_NEON) || defined(__aarch64__)
-    for (int i = 0; i < total_floats; i += 4) {
-        float32x4_t va = vld1q_f32(&a[i]);
-        float32x4_t vb = vld1q_f32(&b[i]);
-        vst1q_f32(&out[i], vaddq_f32(va, vb));
-    }
+    int32_t end4 = count & ~3;
+    for (; i < end4; i += 4) vst1q_f32(out + i, vaddq_f32(vld1q_f32(a + i), vld1q_f32(b + i)));
 #elif defined(__SSE__) || defined(__x86_64__)
-    for (int i = 0; i < total_floats; i += 4) {
-        __m128 va = _mm_loadu_ps(&a[i]);
-        __m128 vb = _mm_loadu_ps(&b[i]);
-        _mm_storeu_ps(&out[i], _mm_add_ps(va, vb));
-    }
+    int32_t end4 = count & ~3;
+    for (; i < end4; i += 4) _mm_storeu_ps(out + i, _mm_add_ps(_mm_loadu_ps(a + i), _mm_loadu_ps(b + i)));
 #else
-    for (int i = 0; i < total_floats; i++) {
-        out[i] = a[i] + b[i];
-    }
+    for (; i < count; i++) out[i] = a[i] + b[i];
 #endif
 }
 

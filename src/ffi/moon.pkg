@@ -1,9 +1,8 @@
 options(
-  "supported_targets": [
-     "native",
-     "llvm"
-  ],
   "native-stub": [
     "simd.c",
-  ]
+  ],
+  targets: {
+    "ffi.mbt": [ "native" ],
+  },
 )

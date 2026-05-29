@@ -41,15 +41,15 @@ test (b : @bench.T) {
   })
 }
 
-test "multi_scene_bench" (b : @bench.T) {
-  let count = 1000
+test (b : @bench.T) {
+  let count = 1024
 
   let bulk_bytes_size = count * 16 
   let out_pool = Bytes::make(bulk_bytes_size, 0)
   let a_pool = Bytes::make(bulk_bytes_size, 0)
   let b_pool = Bytes::make(bulk_bytes_size, 0)
   
-  b.bench(name="bulk_scene1_c_simd", fn() {
+  b.bench(name="vec4_bulk_1024", fn() {
     @f32.Vec4::add_bulk(out_pool, a_pool, b_pool, count)
     b.keep(out_pool)
   })
@@ -59,7 +59,7 @@ test "multi_scene_bench" (b : @bench.T) {
   let f_a = FixedArray::make(total_elements, 0.0)
   let f_b = FixedArray::make(total_elements, 0.0)
 
-  b.bench(name="bulk_scene2_pure_fixed_array_loop", fn() {
+  b.bench(name="fixed_array_bulk_1024", fn() {
     let mut i = 0
     while i < total_elements {
       f_out[i] = f_a[i] + f_b[i]
@@ -75,7 +75,7 @@ test "multi_scene_bench" (b : @bench.T) {
   let s_a = Array::make(count, VecS4::VecS4(1.0, 2.0, 3.0, 4.0))
   let s_b = Array::make(count, VecS4::VecS4(5.0, 6.0, 7.0, 8.0))
 
-  b.bench(name="bulk_scene3_struct_array_loop", fn() {
+  b.bench(name="struct_array_bulk_1024", fn() {
     let mut i = 0
     while i < count {
       s_out[i] = s_a[i] + s_b[i]
